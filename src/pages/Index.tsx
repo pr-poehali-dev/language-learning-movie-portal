@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
+import MoviePlayer, { Movie } from '@/components/MoviePlayer';
 
 const POSTERS = {
   crime: 'https://cdn.poehali.dev/projects/de8a4c23-b5b6-4569-a158-cefbd190ca5d/files/84b3fa4b-4088-445b-bbac-f81314049cfd.jpg',
@@ -57,6 +58,7 @@ const Index = () => {
   const [activeWord, setActiveWord] = useState<string | null>(null);
   const [filter, setFilter] = useState('Все');
   const [levelFilter, setLevelFilter] = useState('Все уровни');
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const catalogRef = useRef<HTMLElement>(null);
   const xp = 1240;
   const xpMax = 2000;
@@ -222,7 +224,7 @@ const Index = () => {
         <p className="text-center text-sm text-muted-foreground mb-8">Найдено фильмов: <span className="font-bold text-foreground">{visibleMovies.length}</span></p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {visibleMovies.map((m, i) => (
-            <div key={m.title} className="group rounded-3xl glass overflow-hidden hover:-translate-y-2 transition-all duration-300 hover:glow-primary animate-pop" style={{ animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
+            <div key={m.title} onClick={() => setSelectedMovie(m)} className="group cursor-pointer rounded-3xl glass overflow-hidden hover:-translate-y-2 transition-all duration-300 hover:glow-primary animate-pop" style={{ animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
               <div className="relative aspect-[4/5] overflow-hidden">
                 <img src={m.poster} alt={m.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
@@ -308,6 +310,8 @@ const Index = () => {
         </div>
         © 2026 LinguaPlay · Учись с удовольствием
       </footer>
+
+      {selectedMovie && <MoviePlayer movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
     </div>
   );
 };

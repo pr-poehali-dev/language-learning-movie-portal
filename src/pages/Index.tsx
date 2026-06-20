@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 
@@ -30,7 +30,18 @@ const CATALOG = [
   { title: 'Ночной город', poster: POSTERS.crime, level: 'B1', lang: '🇬🇧', genre: 'Криминал', episodes: 12 },
   { title: 'Тёплый закат', poster: POSTERS.rom, level: 'A2', lang: '🇬🇧', genre: 'Комедия', episodes: 8 },
   { title: 'За пределами', poster: POSTERS.scifi, level: 'B2', lang: '🇬🇧', genre: 'Фантастика', episodes: 16 },
+  { title: 'Первая любовь', poster: POSTERS.rom, level: 'A1', lang: '🇬🇧', genre: 'Комедия', episodes: 6 },
+  { title: 'Тёмная улица', poster: POSTERS.crime, level: 'C1', lang: '🇬🇧', genre: 'Криминал', episodes: 20 },
+  { title: 'Звёздный путь', poster: POSTERS.scifi, level: 'B1', lang: '🇬🇧', genre: 'Фантастика', episodes: 14 },
+  { title: 'Утренний кофе', poster: POSTERS.rom, level: 'A2', lang: '🇪🇸', genre: 'Комедия', episodes: 10 },
+  { title: 'Холодное дело', poster: POSTERS.crime, level: 'B2', lang: '🇩🇪', genre: 'Криминал', episodes: 8 },
+  { title: 'Новая галактика', poster: POSTERS.scifi, level: 'C1', lang: '🇬🇧', genre: 'Фантастика', episodes: 24 },
+  { title: 'Лёгкое дыхание', poster: POSTERS.rom, level: 'B1', lang: '🇫🇷', genre: 'Комедия', episodes: 12 },
+  { title: 'Город теней', poster: POSTERS.crime, level: 'A2', lang: '🇬🇧', genre: 'Криминал', episodes: 9 },
+  { title: 'Параллельный мир', poster: POSTERS.scifi, level: 'A1', lang: '🇬🇧', genre: 'Фантастика', episodes: 7 },
 ];
+
+const LEVEL_FILTERS = ['Все уровни', 'A1', 'A2', 'B1', 'B2', 'C1'];
 
 const LEADERBOARD = [
   { name: 'Алекс', xp: 14820, emoji: '🦊', rank: 1 },
@@ -45,8 +56,16 @@ const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
 const Index = () => {
   const [activeWord, setActiveWord] = useState<string | null>(null);
   const [filter, setFilter] = useState('Все');
+  const [levelFilter, setLevelFilter] = useState('Все уровни');
+  const catalogRef = useRef<HTMLElement>(null);
   const xp = 1240;
   const xpMax = 2000;
+
+  const scrollToCatalog = () => catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+  const visibleMovies = CATALOG.filter(
+    (c) => (filter === 'Все' || c.genre === filter) && (levelFilter === 'Все уровни' || c.level === levelFilter),
+  );
 
   return (
     <div className="min-h-screen text-foreground overflow-x-hidden">
@@ -89,7 +108,7 @@ const Index = () => {
           Двойные субтитры, клик по любому слову, очки опыта за каждый эпизод. Превращаем сериалы в увлекательную игру.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 animate-pop" style={{ animationDelay: '0.3s' }}>
-          <Button size="lg" className="rounded-full font-bold text-base h-14 px-8 bg-gradient-to-r from-secondary to-primary glow-primary hover:opacity-90">
+          <Button onClick={scrollToCatalog} size="lg" className="rounded-full font-bold text-base h-14 px-8 bg-gradient-to-r from-secondary to-primary glow-primary hover:opacity-90">
             Начать бесплатно <Icon name="ArrowRight" size={20} className="ml-1 animate-bounce-x" />
           </Button>
           <Button size="lg" variant="outline" className="rounded-full font-bold text-base h-14 px-8 border-white/20 bg-white/5 hover:bg-white/10">
@@ -180,19 +199,30 @@ const Index = () => {
       </section>
 
       {/* CATALOG */}
-      <section id="Каталог" className="container py-12">
+      <section id="Каталог" ref={catalogRef} className="container py-12 scroll-mt-24">
         <div className="text-center mb-8">
-          <h2 className="font-display text-4xl font-extrabold mb-2">Каталог <span className="text-gradient">фильмов и сериалов</span></h2>
-          <p className="text-muted-foreground">Выбери что-нибудь по своему уровню и жанру</p>
+          <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-4">
+            <Icon name="Library" size={16} className="text-accent" />
+            <span className="text-sm font-medium text-muted-foreground">Более 1200 фильмов и сериалов</span>
+          </div>
+          <h2 className="font-display text-4xl font-extrabold mb-2">Огромная <span className="text-gradient">библиотека кино</span></h2>
+          <p className="text-muted-foreground">Выбери фильм по своему уровню знания языка и жанру</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
           {['Все', 'Криминал', 'Комедия', 'Фантастика'].map((g) => (
             <button key={g} onClick={() => setFilter(g)} className={`px-5 py-2 rounded-full font-medium text-sm transition ${filter === g ? 'bg-gradient-to-r from-primary to-secondary text-white glow-primary' : 'glass text-muted-foreground hover:text-foreground'}`}>{g}</button>
           ))}
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {CATALOG.filter((c) => filter === 'Все' || c.genre === filter).map((m, i) => (
-            <div key={m.title} className="group rounded-3xl glass overflow-hidden hover:-translate-y-2 transition-all duration-300 hover:glow-primary animate-pop" style={{ animationDelay: `${i * 0.1}s` }}>
+        <div className="flex flex-wrap justify-center items-center gap-2 mb-3">
+          <span className="text-sm text-muted-foreground mr-1 flex items-center gap-1"><Icon name="GraduationCap" size={15} /> Твой уровень:</span>
+          {LEVEL_FILTERS.map((l) => (
+            <button key={l} onClick={() => setLevelFilter(l)} className={`px-4 py-1.5 rounded-full font-bold text-xs transition ${levelFilter === l ? 'bg-accent text-accent-foreground glow-accent' : 'glass text-muted-foreground hover:text-foreground'}`}>{l}</button>
+          ))}
+        </div>
+        <p className="text-center text-sm text-muted-foreground mb-8">Найдено фильмов: <span className="font-bold text-foreground">{visibleMovies.length}</span></p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {visibleMovies.map((m, i) => (
+            <div key={m.title} className="group rounded-3xl glass overflow-hidden hover:-translate-y-2 transition-all duration-300 hover:glow-primary animate-pop" style={{ animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
               <div className="relative aspect-[4/5] overflow-hidden">
                 <img src={m.poster} alt={m.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
@@ -211,6 +241,13 @@ const Index = () => {
             </div>
           ))}
         </div>
+        {visibleMovies.length === 0 && (
+          <div className="text-center py-12 animate-pop">
+            <div className="text-5xl mb-3">🍿</div>
+            <p className="font-display font-bold text-lg">Под этот фильтр пока ничего нет</p>
+            <p className="text-muted-foreground text-sm">Попробуй выбрать другой уровень или жанр</p>
+          </div>
+        )}
       </section>
 
       {/* ACHIEVEMENTS + LEADERBOARD */}
@@ -254,7 +291,7 @@ const Index = () => {
             <div className="text-5xl mb-4 animate-float">🚀</div>
             <h2 className="font-display text-4xl md:text-5xl font-extrabold mb-4">Готов прокачать язык играя?</h2>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">Присоединяйся к 50 000 игроков, которые учат языки по любимым фильмам.</p>
-            <Button size="lg" className="rounded-full font-bold text-base h-14 px-10 bg-gradient-to-r from-secondary to-primary glow-primary hover:opacity-90">
+            <Button onClick={scrollToCatalog} size="lg" className="rounded-full font-bold text-base h-14 px-10 bg-gradient-to-r from-secondary to-primary glow-primary hover:opacity-90">
               Начать бесплатно <Icon name="Sparkles" size={20} className="ml-1" />
             </Button>
           </div>

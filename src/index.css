@@ -4,35 +4,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 252 60% 8%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 252 45% 14%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 252 45% 14%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 280 90% 62%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 330 90% 62%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 252 35% 20%;
+    --muted-foreground: 250 20% 72%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 48 100% 58%;
+    --accent-foreground: 252 60% 12%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 252 35% 24%;
+    --input: 252 35% 22%;
+    --ring: 280 90% 62%;
 
-    --radius: 0.5rem;
+    --radius: 1.25rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -97,5 +97,108 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Rubik", sans-serif;
+    background-image:
+      radial-gradient(
+        circle at 15% 12%,
+        hsl(280 90% 30% / 0.35) 0,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 85% 18%,
+        hsl(330 90% 35% / 0.3) 0,
+        transparent 42%
+      ),
+      radial-gradient(
+        circle at 50% 95%,
+        hsl(200 90% 35% / 0.25) 0,
+        transparent 45%
+      );
+    background-attachment: fixed;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: "Baloo 2", cursive;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      90deg,
+      hsl(48 100% 60%),
+      hsl(330 90% 65%),
+      hsl(280 90% 70%)
+    );
+  }
+
+  .glow-primary {
+    box-shadow:
+      0 0 0 hsl(280 90% 62% / 0),
+      0 12px 40px -8px hsl(280 90% 55% / 0.6);
+  }
+
+  .glow-accent {
+    box-shadow: 0 12px 40px -8px hsl(48 100% 55% / 0.5);
+  }
+
+  .glass {
+    background: hsl(252 45% 16% / 0.55);
+    backdrop-filter: blur(14px);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes pop-in {
+  0% {
+    transform: scale(0.6) rotate(-8deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes bounce-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+.animate-float {
+  animation: float-soft 4s ease-in-out infinite;
+}
+.animate-pop {
+  animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.animate-bounce-x {
+  animation: bounce-x 1s ease-in-out infinite;
 }
